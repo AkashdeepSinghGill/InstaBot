@@ -136,30 +136,22 @@ def get_user_post(insta_username):
 
 
 
-def list_of_likes(insta_username):
-    media_id = get_user_id(insta_username)
-    if media_id == None:
-        print 'user does not exist'
-        exit()
-
-    request_url = (BASE_URL + 'media/%s/likes?access_token=%s') % (media_id,APP_ACCESS_TOKEN)
-
-    liked_media = requests.get(request_url).json()
-
-    if liked_media['meta']['code'] == 200:
-
-        if len(liked_media['data']):
-            for x in range(0, len(liked_media['data'])):
-                liked_post = liked_media['data'][x]['text']
-                print '%s\n' % (liked_post)
-
+def get_like_list(insta_username):
+    media_id = get_post_id(insta_username)
+    request_url = (BASE_URL + 'media/%s/likes?access_token=%s') % (media_id, APP_ACCESS_TOKEN)
+    print 'GET request url:%s' % (request_url)
+    users_info = requests.get(request_url).json()
+    i = 0
+    if users_info['meta']['code'] == 200:
+        if len(users_info['data']):
+            for ele in users_info['data']:
+                print (users_info['data'][i]['username'])
+                i = i + 1
         else:
-            print("No likes", 'yellow')
-
+            print 'User does not exist!'
     else:
-        print('ERROR', 'red')
-
-
+        print 'Status code other than 200 received!'
+    exit()
 
 
 
@@ -352,7 +344,7 @@ def start_bot():
         print "j.enter to know sub trendding\n"
         print "k.Exit"
 
-        choice = raw_input("Enter you choice: ")
+        choice = raw_input("Enter your choice: ")
         if choice == "a":
             self_info()
         elif choice == "b":
@@ -365,7 +357,7 @@ def start_bot():
             get_user_post(insta_username)
         elif choice=="e":
            insta_username = raw_input("Enter the username of the user: ")
-           list_of_likes(insta_username)
+           get_like_list(insta_username)
         elif choice=="f":
            insta_username = raw_input("Enter the username of the user: ")
            like_a_post(insta_username)
