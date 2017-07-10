@@ -97,8 +97,9 @@ def get_own_post():
 
     if own_media['meta']['code'] == 200:
         if len(own_media['data']):
-            image_name = own_media['data'][0]['id'] + '.jpeg'
-            image_url = own_media['data'][0]['images']['standard_resolution']['url']
+            n_th_post = int(raw_input("which post"))
+            image_name = own_media['data'][n_th_post]['id'] + '.jpeg'
+            image_url = own_media['data'][n_th_post]['images']['standard_resolution']['url']
             urllib.urlretrieve(image_url, image_name)
             print 'Your image has been downloaded!'
         else:
@@ -124,8 +125,9 @@ def get_user_post(insta_username):
 
     if user_media['meta']['code'] == 200:
         if len(user_media['data']):
-            image_name = user_media['data'][0]['id'] + '.jpeg'
-            image_url = user_media['data'][0]['images']['standard_resolution']['url']
+            n_th_post = int(raw_input("which post"))
+            image_name = user_media['data'][n_th_post]['id'] + '.jpeg'
+            image_url = user_media['data'][n_th_post]['images']['standard_resolution']['url']
             urllib.urlretrieve(image_url, image_name)
             print 'Your image has been downloaded!'
         else:
@@ -416,6 +418,10 @@ def download_post_by_likes():
                 a = False
 
 
+# download that post which which you want to ny the post number
+
+
+
 
 
 
@@ -465,22 +471,30 @@ def start_bot():
            insta_username = raw_input("Enter the username of the user: ")
            like_a_post(insta_username)
         elif choice=="g":
+
            insta_username = raw_input("Enter the username of the user: ")
-           comment_info(insta_username)
+           if set('[~!@#$%^&*()+{}":;\']+$ " "').intersection(insta_username):
+               cprint('Username not valid in instagram!!!', "red")
+           else:
+               comment_info(insta_username)
         elif choice=="h":
            insta_username = raw_input("Enter the username of the user: ")
            post_a_comment(insta_username)
         elif choice=="i":
            insta_username = raw_input("Enter the username of the user: ")
-           delete_negative_comment(insta_username)
+           if set('[~!@#$%^&*()+{}":;\']+$ " "').intersection(insta_username):
+               cprint ('Username not valid in instagram!!!',"red")
+           else:
+               delete_negative_comment(insta_username)
         elif choice=="j":
 
-            find_subtrends("tagsfortags")
+            find_subtrends("chandigarh")
         elif choice=="k":
             insta_username = raw_input("Enter the username of the user:")
             recent_media_liked(insta_username)
         elif choice =="m":
             download_post_by_likes()
+
 
 
         elif choice == "l":

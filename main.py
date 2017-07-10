@@ -96,8 +96,9 @@ def get_own_post():
 
     if own_media['meta']['code'] == 200:
         if len(own_media['data']):
-            image_name = own_media['data'][0]['id'] + '.jpeg'
-            image_url = own_media['data'][0]['images']['standard_resolution']['url']
+            n_th_post = int(raw_input("which post"))
+            image_name = own_media['data'][n_th_post]['id'] + '.jpeg'
+            image_url = own_media['data'][n_th_post]['images']['standard_resolution']['url']
             urllib.urlretrieve(image_url, image_name)
             print 'Your image has been downloaded!'
         else:
@@ -123,8 +124,9 @@ def get_user_post(insta_username):
 
     if user_media['meta']['code'] == 200:
         if len(user_media['data']):
-            image_name = user_media['data'][0]['id'] + '.jpeg'
-            image_url = user_media['data'][0]['images']['standard_resolution']['url']
+            n_th_post = int(raw_input("which post"))
+            image_name = user_media['data'][n_th_post]['id'] + '.jpeg'
+            image_url = user_media['data'][n_th_post]['images']['standard_resolution']['url']
             urllib.urlretrieve(image_url, image_name)
             print 'Your image has been downloaded!'
         else:
@@ -387,27 +389,48 @@ def start_bot():
             self_info()
         elif choice == "b":
             insta_username = raw_input("Enter the username of the user: ")
-            get_user_info(insta_username)
+            if set('[~!@#$%^&*()+{}":;\']+$ " "').intersection(insta_username):
+                cprint('Username not valid in instagram!!!', "red")
+            else:
+                get_user_info(insta_username)
         elif choice == "c":
             get_own_post()
         elif choice == "d":
             insta_username = raw_input("Enter the username of the user: ")
-            get_user_post(insta_username)
+            if set('[~!@#$%^&*()+{}":;\']+$ " "').intersection(insta_username):
+                cprint('Username not valid in instagram!!!', "red")
+            else:
+                get_user_post(insta_username)
         elif choice=="e":
            insta_username = raw_input("Enter the username of the user: ")
-           get_like_list(insta_username)
+           if set('[~!@#$%^&*()+{}":;\']+$ " "').intersection(insta_username):
+               cprint('Username not valid in instagram!!!', "red")
+           else:
+               get_like_list(insta_username)
         elif choice=="f":
            insta_username = raw_input("Enter the username of the user: ")
-           like_a_post(insta_username)
+           if set('[~!@#$%^&*()+{}":;\']+$ " "').intersection(insta_username):
+               cprint('Username not valid in instagram!!!', "red")
+           else:
+               like_a_post(insta_username)
         elif choice=="g":
            insta_username = raw_input("Enter the username of the user: ")
-           comment_info(insta_username)
+           if set('[~!@#$%^&*()+{}":;\']+$ " "').intersection(insta_username):
+               cprint('Username not valid in instagram!!!', "red")
+           else:
+               comment_info(insta_username)
         elif choice=="h":
            insta_username = raw_input("Enter the username of the user: ")
-           post_a_comment(insta_username)
+           if set('[~!@#$%^&*()+{}":;\']+$ " "').intersection(insta_username):
+               cprint('Username not valid in instagram!!!', "red")
+           else:
+               post_a_comment(insta_username)
         elif choice=="i":
            insta_username = raw_input("Enter the username of the user: ")
-           delete_negative_comment(insta_username)
+           if set('[~!@#$%^&*()+{}":;\']+$ " "').intersection(insta_username):
+               cprint('Username not valid in instagram!!!', "red")
+           else:
+               delete_negative_comment(insta_username)
         elif choice=="j":
             trend_id()
         elif choice=="k":
