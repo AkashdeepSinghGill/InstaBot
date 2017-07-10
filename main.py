@@ -334,6 +334,30 @@ def recent_media_liked():
         else:
             print "Status code other than 200 received!"
 
+        # function download posts with atleast some specific minimum number of likes
+def download_post_by_likes():
+    request_url = BASE_URL + "users/self/media/recent/?access_token=%s" % (APP_ACCESS_TOKEN)
+    own_media = requests.get(request_url).json()
+    x = 0
+    if own_media['meta']['code'] == 200:
+        if len(own_media['data']):
+            like_count = int(raw_input("Enter the minimum likes for a post(in numeric)"))
+            for x in range(0, len(own_media["data"])):
+                if own_media["data"][x]["likes"]["count"] > like_count:
+                    image_name = own_media['data'][x]['id'] + '.jpeg'
+                    image_url = own_media['data'][x]['images']['standard_resolution']['url']
+                    urllib.urlretrieve(image_url, image_name)
+                    print 'Your image has been downloaded!'
+                    x = x + 1
+                else:
+                    x = x + 1
+                    print str(x) + "th picture cannot be downloaded as likes are less"
+
+        else:
+                print 'Post does not exist!'
+    else:
+        print 'Status code other than 200 received!'
+
 
 #startbot asking user to enter input
 
@@ -355,7 +379,8 @@ def start_bot():
         print "i.Delete negative comments from the recent post of a user\n"
         print "j.enter to know sub trendding\n"
         print "k.Recent media liked by user"
-        cprint ('l.Exit',"red")
+        print "l.Download the post which have certain minimum number of likes"
+        cprint ('m.Exit',"red")
 
         choice = raw_input("Enter your choice: ")
         if choice == "a":
@@ -387,9 +412,10 @@ def start_bot():
             trend_id()
         elif choice=="k":
             recent_media_liked()
+        elif choice=="l":
+            download_post_by_likes()
 
-
-        elif choice == "l":
+        elif choice == "m":
             exit()
         else:
             print "wrong choice"
