@@ -1,9 +1,10 @@
-import requests, colorama
+import requests, colorama, pylab
 import urllib
-from wordcloud import WordCloud
+from wordcloud import WordCloud,STOPWORDS
 import matplotlib.pyplot as plt
 from textblob import TextBlob
 from termcolor import *
+
 from textblob.sentiments import NaiveBayesAnalyzer
 from apptocken import APP_ACCESS_TOKEN
 BASE_URL = 'https://api.instagram.com/v1/'
@@ -280,59 +281,74 @@ def delete_negative_comment(insta_username):
 
 #hash tags
 
-def trend_id():
-    hash_dict = {}
-    tag = raw_input("enter trend : ")
-    request_url = (BASE_URL + 'tags/%s/media/recent?access_token=%s') % (tag, APP_ACCESS_TOKEN)
-    media_tag = requests.get(request_url).json()
+    # objective 2
+    # function to find subtrends of a post
+    # try tag: igers,beard
+def find_subtrends(tag):
+        request_url = BASE_URL + "tags/%s/media/recent?access_token=%s" % (tag, APP_ACCESS_TOKEN)
 
-    if media_tag['meta']['code'] == 200:
+        hash_items = {}
+        user_media = requests.get(request_url).json()
+        if user_media['meta']['code'] == 200:
+            if len(user_media['data']):
+                for x in range(0, len(user_media['data'])):
+                    for y in range(0, len(user_media['data'][x]['tags'])):
 
-        if media_tag['data']:
+                        if user_media['data'][x]['tags'][y] in hash_items:
+                            hash_items[user_media['data'][x]['tags'][y]] += 1
+                        else:
+                            hash_items[user_media['data'][x]['tags'][y]] = 1
 
-            for x in range(0, len(media_tag['data'])):
-                tags = media_tag['data'][x]['tags']
-                print tags
 
-
-                for y in range(0, len(tags)):
-
-                    if media_tag['data'][x]['tags'][y] in hash_dict:
-                        hash_dict[media_tag['data'][x]['tags'][y]] += 1
-
-                    else:
-                        hash_dict[media_tag['data'][x]['tags'][y]] = 1
-
-                print hash_dict
-
-        else:
-            print'post not exist'
-
-    else:
-        print 'ERROR'
-    hash_dict.pop(tag.lower(), None)
-    print hash_dict
-    wordcloud = WordCloud().generate_from_frequencies(hash_dict)
-
-    plt.imshow(wordcloud, interpolation='bilinear')
-    plt.show()
-
-    # downloading recent media liked by user
-
-def recent_media_liked():
-        request_url = BASE_URL + "users/self/media/liked?access_token=%s" % (APP_ACCESS_TOKEN)
-        recently_liked_media = requests.get(request_url).json()
-
-        if recently_liked_media["meta"]["code"] == 200:
-            if len(recently_liked_media["data"]):
-                image_name = recently_liked_media["data"][0]["id"] + ".jpeg"
-                image_url = recently_liked_media["data"][0]["images"]["standard_resolution"]["url"]
-                urllib.urlretrieve(image_url, image_name)
-                print "Your image has been downloaded!"
             else:
-                print "User does not exist!"
+                print "There is no recent post!"
         else:
             print "Status code other than 200 received!"
+        hash_items.pop(tag)
+        print hash_items
+        pylab.figure()
+
+        x = range(len(hash_items))
+        pylab.xticks(x, hash_items.keys())
+        pylab.plot(x, hash_items.values(), "g")
+        pylab.show()
+
+        wordcloud = WordCloud(font_path=r"C:\Windows\Fonts\FREESCPT.TTF",
+                              stopwords=STOPWORDS,
+                              background_color="white",
+                              width=1200,
+                              height=1000,
+                              ).generate_from_frequencies(hash_items)
+
+        plt.imshow(wordcloud, interpolation="bilinear")
+        plt.axis("off")
+        plt.show()
+        # end of objective 2
+
+    #downloading recent media liked by user
+
+def recent_media_liked():
+    request_url = BASE_URL + "users/self/media/liked?access_token=%s" % (APP_ACCESS_TOKEN)
+    recently_liked_media=requests.get(request_url).json()
+
+    if recently_liked_media["meta"]["code"] == 200:
+        if len(recently_liked_media["data"]):
+            image_name = recently_liked_media["data"][0]["id"] + ".jpeg"
+            image_url = recently_liked_media["data"][0]["images"]["standard_resolution"]["url"]
+            urllib.urlretrieve(image_url, image_name)
+            print "Your image has been downloaded!"
+        else:
+            print "User does not exist!"
+    else:
+        print "Status code other than 200 received!"
+
+
+
+
+
+
+
+
 
 
 #startbot asking user to enter input
@@ -355,7 +371,7 @@ def start_bot():
         print "i.Delete negative comments from the recent post of a user\n"
         print "j.enter to know sub trendding\n"
         print "k.Recent media liked by user"
-        cprint ('l.Exit',"red")
+        cprint ("l.Exit","red")
 
         choice = raw_input("Enter your choice: ")
         if choice == "a":
@@ -384,9 +400,11 @@ def start_bot():
            insta_username = raw_input("Enter the username of the user: ")
            delete_negative_comment(insta_username)
         elif choice=="j":
-            trend_id()
+
+            find_subtrends("tagsfortags")
         elif choice=="k":
-            recent_media_liked()
+            insta_username = raw_input("Enter the username of the user:")
+            recent_media_liked(insta_username)
 
 
         elif choice == "l":
