@@ -96,6 +96,9 @@ def get_own_post():
 
     if own_media['meta']['code'] == 200:
         if len(own_media['data']):
+            image_name = own_media['data'][0]['id'] + '.jpeg'
+            image_url = own_media['data'][0]['images']['standard_resolution']['url']
+            urllib.urlretrieve(image_url, image_name)
             n_th_post = int(raw_input("which post"))
             image_name = own_media['data'][n_th_post]['id'] + '.jpeg'
             image_url = own_media['data'][n_th_post]['images']['standard_resolution']['url']
@@ -124,6 +127,9 @@ def get_user_post(insta_username):
 
     if user_media['meta']['code'] == 200:
         if len(user_media['data']):
+            image_name = user_media['data'][0]['id'] + '.jpeg'
+            image_url = user_media['data'][0]['images']['standard_resolution']['url']
+            urllib.urlretrieve(image_url, image_name)
             n_th_post = int(raw_input("which post"))
             image_name = user_media['data'][n_th_post]['id'] + '.jpeg'
             image_url = user_media['data'][n_th_post]['images']['standard_resolution']['url']
